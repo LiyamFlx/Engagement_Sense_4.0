@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngageSense - Audio Engagement Analysis Tool</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        header {
+            padding: 20px;
+            text-align: center;
+            background-color: #1e1e1e;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 10px 0 0;
+            color: #bbbbbb;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        nav button {
+            padding: 10px 20px;
+            background-color: #333333;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        nav button:hover {
+            background-color: #555555;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .welcome-screen {
+            text-align: center;
+        }
+        .welcome-screen video {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .audio-upload-screen, .analysis-screen, .results-screen {
+            text-align: center;
+        }
+        input[type="file"], .audio-controls button {
+            margin: 20px;
+            font-size: 1rem;
+        }
+        .chart-container {
+            margin: 20px 0;
+        }
+        .chart {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #bbbbbb;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>EngageSense</h1>
+        <p>Comprehensive Audio Engagement Analysis Tool</p>
+    </header>
+    <nav>
+        <button onclick="navigateTo('welcome-screen')">Welcome</button>
+        <button onclick="navigateTo('audio-upload-screen')">Upload/Record</button>
+        <button onclick="navigateTo('analysis-screen')">Analyze</button>
+        <button onclick="navigateTo('results-screen')">Results</button>
+    </nav>
+    <div class="container">
+        <div id="welcome-screen" class="screen active welcome-screen">
+            <h2>Welcome to EngageSense</h2>
+            <p>Analyze your audio content and extract actionable insights.</p>
+            <video controls autoplay muted>
+                <source src="overview.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <button onclick="navigateTo('audio-upload-screen')">Get Started</button>
+        </div>
+        <div id="audio-upload-screen" class="screen audio-upload-screen">
+            <h2>Upload or Record Audio</h2>
+            <input type="file" accept=".mp3, .wav" />
+            <div class="audio-controls">
+                <button onclick="startRecording()">Start Recording</button>
+                <button onclick="stopRecording()">Stop Recording</button>
+            </div>
+            <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+            <button onclick="navigateTo('analysis-screen')">Next</button>
+        </div>
+        <div id="analysis-screen" class="screen analysis-screen">
+            <h2>Analyzing Audio...</h2>
+            <p>Please wait while we process your audio content.</p>
+            <progress id="analysisProgress" value="50" max="100" style="width: 100%;"></progress>
+            <button onclick="navigateTo('results-screen')">View Results</button>
+        </div>
+        <div id="results-screen" class="screen results-screen">
+            <h2>Results Summary</h2>
+            <div class="chart-container">
+                <canvas id="engagementChart" class="chart"></canvas>
+            </div>
+            <button onclick="downloadPDF()">Download PDF</button>
+            <button onclick="navigateTo('welcome-screen')">Start Over</button>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 EngageSense | All Rights Reserved</p>
+    </footer>
+    <script>
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startRecording() {
+            alert("Recording started...");
+        }
+
+        function stopRecording() {
+            alert("Recording stopped.");
+        }
+
+        function downloadPDF() {
+            alert("Results PDF downloaded.");
+        }
+    </script>
+</body>
+</html>
