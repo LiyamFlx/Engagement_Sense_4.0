@@ -1,258 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EngageSense</title>
-    <style>
-        /* General Styles */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EngageSense - Upload/Record Audio</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 600px;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
 
-        button {
-            padding: 10px 20px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #3b82f6;
-            color: #ffffff;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
 
-        button:hover {
-            background-color: #2563eb;
-        }
+    p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .upload-section, .record-section {
+      border: 2px dashed #444;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      width: 80%;
+      max-width: 600px;
+      background-color: #1e1e1e;
+      transition: 0.3s;
+    }
 
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #444;
-            border-radius: 5px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
+    .upload-section:hover, .record-section:hover {
+      border-color: #888;
+    }
 
-        .progress-bar-inner {
-            height: 100%;
-            width: 0;
-            background: #3b82f6;
-            transition: width 0.5s ease;
-        }
+    .upload-section input {
+      display: none;
+    }
 
-        canvas {
-            margin: 20px auto;
-            display: block;
-        }
+    .upload-section label {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-        /* Card Grid Styles */
-        .card-grid {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
+    .upload-section label:hover {
+      background-color: #555;
+    }
 
-        .card {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 45%;
-            min-width: 250px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
 
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
+    .progress-bar span {
+      margin-right: 10px;
+      color: #ccc;
+    }
 
-        .card h2 {
-            margin-bottom: 10px;
-            font-size: 1.5rem;
-            color: #3b82f6;
-        }
+    .progress-bar div {
+      flex: 1;
+      height: 10px;
+      background: #444;
+      position: relative;
+    }
 
-        .card p {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 15px;
-        }
+    .progress-bar div::after {
+      content: '';
+      display: block;
+      height: 100%;
+      background: #76c7c0;
+      width: 0%;
+      position: absolute;
+      transition: width 0.3s ease-in-out;
+    }
 
-        .card button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #3b82f6;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
 
-        .card button:hover {
-            background-color: #2563eb;
-        }
+    .controls button {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        #back-to-welcome {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1rem;
-        }
-    </style>
+    .controls button:hover {
+      background: #555;
+    }
+
+    .navigation {
+      margin-top: 20px;
+    }
+
+    .navigation button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      background: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .navigation button:hover {
+      background: #555;
+    }
+
+    canvas {
+      margin-top: 20px;
+      max-width: 100%;
+      background: #1e1e1e;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-    <main id="main-content">
-        <section id="welcome-screen" class="container">
-            <h1>Welcome to EngageSense</h1>
-            <p>Analyze audio engagement with cutting-edge technology.</p>
-            <button id="start-button">Get Started</button>
-        </section>
+  <div class="container">
+    <h1>Upload or Record Audio</h1>
+    <p>Choose to upload an existing track or record audio directly within the browser.</p>
 
-        <section id="upload-record-screen" class="container hidden">
-            <h1>Upload or Record Audio</h1>
-            <div class="card-grid">
-                <div class="card" id="upload-card">
-                    <h2>Upload</h2>
-                    <p>Select an audio file to analyze.</p>
-                    <button id="upload-button">Upload Track</button>
-                    <button id="analyze-upload">Analyze Upload</button>
-                </div>
-                <div class="card" id="record-card">
-                    <h2>Record</h2>
-                    <p>Record live audio for analysis.</p>
-                    <button id="record-button">Start Recording</button>
-                    <button id="stop-recording" class="hidden">Stop Recording</button>
-                    <button id="analyze-recording" class="hidden">Analyze Recording</button>
-                </div>
-            </div>
-            <button id="back-to-welcome">Back</button>
-        </section>
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <h2>Upload Track</h2>
+      <p>Drag & drop your file here or click below to browse.</p>
+      <label for="file-upload">Browse Files</label>
+      <input type="file" id="file-upload" accept=".mp3,.wav,.ogg" onchange="handleFileUpload(event)">
+      <div class="progress-bar">
+        <span>Progress:</span>
+        <div id="upload-progress"></div>
+      </div>
+    </div>
 
-        <section id="analysis-screen" class="container hidden">
-            <h1>Analyzing...</h1>
-            <p>Please wait while we process your audio data.</p>
-            <div class="progress-bar">
-                <div id="progress-bar-inner-analysis" class="progress-bar-inner"></div>
-            </div>
-        </section>
+    <!-- Record Section -->
+    <div class="record-section">
+      <h2>Record Audio</h2>
+      <p>Use the in-browser controls to record your audio.</p>
+      <div class="controls">
+        <button onclick="startRecording()">Start</button>
+        <button onclick="pauseRecording()">Pause</button>
+        <button onclick="stopRecording()">Stop</button>
+      </div>
+      <canvas id="waveform" width="600" height="100"></canvas>
+      <p id="record-timer">Recording Time: 0:00</p>
+    </div>
 
-        <section id="results-screen" class="container hidden">
-            <h1>Results Summary</h1>
-            <ul id="engagement-results">
-                <li>Physical Engagement: <strong>85%</strong></li>
-                <li>Emotional Engagement: <strong>78%</strong></li>
-                <li>Mental Engagement: <strong>92%</strong></li>
-                <li>Spiritual Engagement: <strong>67%</strong></li>
-            </ul>
-            <canvas id="results-chart" width="400" height="300"></canvas>
-            <button id="start-over">Start Over</button>
-        </section>
-    </main>
+    <!-- Navigation -->
+    <div class="navigation">
+      <button onclick="navigateTo('welcome-screen')">Back</button>
+      <button onclick="navigateTo('analysis-screen')">Next</button>
+    </div>
+  </div>
 
-    <script>
-        // DOM Elements
-        const screens = {
-            welcome: document.getElementById('welcome-screen'),
-            upload: document.getElementById('upload-record-screen'),
-            analysis: document.getElementById('analysis-screen'),
-            results: document.getElementById('results-screen'),
-        };
+  <script>
+    // File Upload Logic
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        alert(`File "${file.name}" is selected.`);
+        // Simulate progress bar
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          document.querySelector('#upload-progress').style.width = `${progress}%`;
+          if (progress >= 100) clearInterval(interval);
+        }, 300);
+      }
+    }
 
-        const buttons = {
-            start: document.getElementById('start-button'),
-            back: document.getElementById('back-to-welcome'),
-            analyzeUpload: document.getElementById('analyze-upload'),
-            analyzeRecording: document.getElementById('analyze-recording'),
-            startOver: document.getElementById('start-over'),
-        };
+    // Recording Logic
+    let recordingTime = 0;
+    let recordingInterval;
+    function startRecording() {
+      recordingInterval = setInterval(() => {
+        recordingTime++;
+        const minutes = Math.floor(recordingTime / 60);
+        const seconds = recordingTime % 60;
+        document.getElementById('record-timer').textContent = `Recording Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }, 1000);
+    }
 
-        const progressBars = {
-            analysis: document.getElementById('progress-bar-inner-analysis'),
-        };
+    function pauseRecording() {
+      clearInterval(recordingInterval);
+    }
 
-        // Navigation Functions
-        function navigateTo(screen) {
-            Object.values(screens).forEach(el => el.classList.add('hidden'));
-            screens[screen].classList.remove('hidden');
-        }
+    function stopRecording() {
+      clearInterval(recordingInterval);
+      alert('Recording Stopped');
+      recordingTime = 0;
+      document.getElementById('record-timer').textContent = 'Recording Time: 0:00';
+    }
 
-        buttons.start.addEventListener('click', () => navigateTo('upload'));
-        buttons.back.addEventListener('click', () => navigateTo('welcome'));
-        buttons.startOver.addEventListener('click', () => navigateTo('welcome'));
+    // Waveform Visualization (Dummy)
+    const ctx = document.getElementById('waveform').getContext('2d');
+    ctx.fillStyle = '#76c7c0';
+    for (let i = 0; i < 600; i += 20) {
+      ctx.fillRect(i, Math.random() * 50 + 25, 10, 50);
+    }
 
-        // Analysis Simulation
-        function startAnalysis() {
-            navigateTo('analysis');
-            let progress = 0;
-
-            const interval = setInterval(() => {
-                progress += 10;
-                progressBars.analysis.style.width = `${progress}%`;
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    navigateTo('results');
-                    renderChart();
-                }
-            }, 500);
-        }
-
-        buttons.analyzeUpload.addEventListener('click', startAnalysis);
-        buttons.analyzeRecording.addEventListener('click', startAnalysis);
-
-        // Chart Rendering
-        function renderChart() {
-            const canvas = document.getElementById('results-chart');
-            const ctx = canvas.getContext('2d');
-            const data = [85, 78, 92, 67];
-            const labels = ['Physical', 'Emotional', 'Mental', 'Spiritual'];
-            const barWidth = 80;
-            const gap = 20;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            data.forEach((value, index) => {
-                const x = index * (barWidth + gap) + gap;
-                const y = canvas.height - (value / 100) * canvas.height;
-
-                ctx.fillStyle = ['#f87171', '#60a5fa', '#a78bfa', '#facc15'][index];
-                ctx.fillRect(x, y, barWidth, canvas.height - y);
-
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.fillText(labels[index], x + barWidth / 2, canvas.height - 10);
-                ctx.fillText(`${value}%`, x + barWidth / 2, y - 10);
-            });
-        }
-    </script>
+    // Navigation Logic
+    function navigateTo(screen) {
+      alert(`Navigating to ${screen}`);
+    }
+  </script>
 </body>
 </html>
