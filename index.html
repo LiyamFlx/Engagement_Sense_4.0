@@ -7,18 +7,18 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
             color: #ffffff;
         }
         header {
-            padding: 20px;
             text-align: center;
-            background-color: #1e1e1e;
+            padding: 20px;
+            background-color: #2a2a2a;
         }
         header h1 {
-            margin: 0;
             font-size: 2.5rem;
+            margin: 0;
         }
         header p {
             margin: 10px 0 0;
@@ -27,23 +27,28 @@
         nav {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin: 20px 0;
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-bottom: 2px solid #444;
         }
         nav button {
-            padding: 10px 20px;
-            background-color: #333333;
+            background-color: #333;
+            color: #fff;
             border: none;
             border-radius: 5px;
-            color: #ffffff;
+            padding: 10px 15px;
             cursor: pointer;
             font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         nav button:hover {
-            background-color: #555555;
+            background-color: #555;
+            transform: scale(1.05);
         }
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -52,9 +57,6 @@
         }
         .screen.active {
             display: block;
-        }
-        .welcome-screen {
-            text-align: center;
         }
         .welcome-screen video {
             max-width: 100%;
@@ -65,8 +67,14 @@
             text-align: center;
         }
         input[type="file"], .audio-controls button {
-            margin: 20px;
+            margin: 15px 0;
             font-size: 1rem;
+        }
+        progress {
+            width: 80%;
+            height: 20px;
+            margin: 20px auto;
+            display: block;
         }
         .chart-container {
             margin: 20px 0;
@@ -78,8 +86,8 @@
         }
         footer {
             text-align: center;
-            padding: 20px;
-            background-color: #1e1e1e;
+            padding: 15px;
+            background-color: #2a2a2a;
             color: #bbbbbb;
         }
     </style>
@@ -96,32 +104,32 @@
         <button onclick="navigateTo('results-screen')">Results</button>
     </nav>
     <div class="container">
-        <div id="welcome-screen" class="screen active welcome-screen">
+        <div id="welcome-screen" class="screen active">
             <h2>Welcome to EngageSense</h2>
             <p>Analyze your audio content and extract actionable insights.</p>
-            <video controls autoplay muted>
+            <video controls>
                 <source src="overview.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <button onclick="navigateTo('audio-upload-screen')">Get Started</button>
         </div>
-        <div id="audio-upload-screen" class="screen audio-upload-screen">
+        <div id="audio-upload-screen" class="screen">
             <h2>Upload or Record Audio</h2>
-            <input type="file" accept=".mp3, .wav" />
+            <input type="file" id="audioFile" accept=".mp3, .wav">
             <div class="audio-controls">
                 <button onclick="startRecording()">Start Recording</button>
                 <button onclick="stopRecording()">Stop Recording</button>
             </div>
-            <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+            <progress id="uploadProgress" value="0" max="100"></progress>
             <button onclick="navigateTo('analysis-screen')">Next</button>
         </div>
-        <div id="analysis-screen" class="screen analysis-screen">
+        <div id="analysis-screen" class="screen">
             <h2>Analyzing Audio...</h2>
             <p>Please wait while we process your audio content.</p>
-            <progress id="analysisProgress" value="50" max="100" style="width: 100%;"></progress>
+            <progress id="analysisProgress" value="50" max="100"></progress>
             <button onclick="navigateTo('results-screen')">View Results</button>
         </div>
-        <div id="results-screen" class="screen results-screen">
+        <div id="results-screen" class="screen">
             <h2>Results Summary</h2>
             <div class="chart-container">
                 <canvas id="engagementChart" class="chart"></canvas>
