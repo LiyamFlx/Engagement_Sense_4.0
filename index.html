@@ -3,162 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EngageSense - Audio Engagement Analysis Tool</title>
+    <title>EngageSense</title>
     <style>
+        /* General Styles */
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #1a1a1a;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
             color: #ffffff;
-        }
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #2a2a2a;
-        }
-        header h1 {
-            font-size: 2.5rem;
-            margin: 0;
-        }
-        header p {
-            margin: 10px 0 0;
-            color: #bbbbbb;
-        }
-        nav {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            background-color: #2a2a2a;
-            padding: 10px;
-            border-bottom: 2px solid #444;
+            align-items: center;
+            min-height: 100vh;
         }
-        nav button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        nav button:hover {
-            background-color: #555;
-            transform: scale(1.05);
-        }
+
         .container {
-            max-width: 900px;
-            margin: 0 auto;
+            width: 90%;
+            max-width: 600px;
+            background: #1e1e1e;
             padding: 20px;
-        }
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
-        }
-        .welcome-screen video {
-            max-width: 100%;
             border-radius: 10px;
-            margin: 20px 0;
-        }
-        .audio-upload-screen, .analysis-screen, .results-screen {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
-        input[type="file"], .audio-controls button {
-            margin: 15px 0;
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #3b82f6;
+            color: #ffffff;
             font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        progress {
-            width: 80%;
-            height: 20px;
+
+        button:hover {
+            background-color: #2563eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #444;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0;
+            background: #3b82f6;
+            transition: width 0.5s ease;
+        }
+
+        canvas {
             margin: 20px auto;
             display: block;
         }
-        .chart-container {
+
+        /* Card Grid Styles */
+        .card-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
             margin: 20px 0;
         }
-        .chart {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        footer {
+
+        .card {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
-            padding: 15px;
-            background-color: #2a2a2a;
-            color: #bbbbbb;
+            width: 45%;
+            min-width: 250px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .card button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+            background-color: #2563eb;
+        }
+
+        #back-to-welcome {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>EngageSense</h1>
-        <p>Comprehensive Audio Engagement Analysis Tool</p>
-    </header>
-    <nav>
-        <button onclick="navigateTo('welcome-screen')">Welcome</button>
-        <button onclick="navigateTo('audio-upload-screen')">Upload/Record</button>
-        <button onclick="navigateTo('analysis-screen')">Analyze</button>
-        <button onclick="navigateTo('results-screen')">Results</button>
-    </nav>
-    <div class="container">
-        <div id="welcome-screen" class="screen active">
-            <h2>Welcome to EngageSense</h2>
-            <p>Analyze your audio content and extract actionable insights.</p>
-            <video controls>
-                <source src="overview.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <button onclick="navigateTo('audio-upload-screen')">Get Started</button>
-        </div>
-        <div id="audio-upload-screen" class="screen">
-            <h2>Upload or Record Audio</h2>
-            <input type="file" id="audioFile" accept=".mp3, .wav">
-            <div class="audio-controls">
-                <button onclick="startRecording()">Start Recording</button>
-                <button onclick="stopRecording()">Stop Recording</button>
+    <main id="main-content">
+        <section id="welcome-screen" class="container">
+            <h1>Welcome to EngageSense</h1>
+            <p>Analyze audio engagement with cutting-edge technology.</p>
+            <button id="start-button">Get Started</button>
+        </section>
+
+        <section id="upload-record-screen" class="container hidden">
+            <h1>Upload or Record Audio</h1>
+            <div class="card-grid">
+                <div class="card" id="upload-card">
+                    <h2>Upload</h2>
+                    <p>Select an audio file to analyze.</p>
+                    <button id="upload-button">Upload Track</button>
+                    <button id="analyze-upload">Analyze Upload</button>
+                </div>
+                <div class="card" id="record-card">
+                    <h2>Record</h2>
+                    <p>Record live audio for analysis.</p>
+                    <button id="record-button">Start Recording</button>
+                    <button id="stop-recording" class="hidden">Stop Recording</button>
+                    <button id="analyze-recording" class="hidden">Analyze Recording</button>
+                </div>
             </div>
-            <progress id="uploadProgress" value="0" max="100"></progress>
-            <button onclick="navigateTo('analysis-screen')">Next</button>
-        </div>
-        <div id="analysis-screen" class="screen">
-            <h2>Analyzing Audio...</h2>
-            <p>Please wait while we process your audio content.</p>
-            <progress id="analysisProgress" value="50" max="100"></progress>
-            <button onclick="navigateTo('results-screen')">View Results</button>
-        </div>
-        <div id="results-screen" class="screen">
-            <h2>Results Summary</h2>
-            <div class="chart-container">
-                <canvas id="engagementChart" class="chart"></canvas>
+            <button id="back-to-welcome">Back</button>
+        </section>
+
+        <section id="analysis-screen" class="container hidden">
+            <h1>Analyzing...</h1>
+            <p>Please wait while we process your audio data.</p>
+            <div class="progress-bar">
+                <div id="progress-bar-inner-analysis" class="progress-bar-inner"></div>
             </div>
-            <button onclick="downloadPDF()">Download PDF</button>
-            <button onclick="navigateTo('welcome-screen')">Start Over</button>
-        </div>
-    </div>
-    <footer>
-        <p>&copy; 2024 EngageSense | All Rights Reserved</p>
-    </footer>
+        </section>
+
+        <section id="results-screen" class="container hidden">
+            <h1>Results Summary</h1>
+            <ul id="engagement-results">
+                <li>Physical Engagement: <strong>85%</strong></li>
+                <li>Emotional Engagement: <strong>78%</strong></li>
+                <li>Mental Engagement: <strong>92%</strong></li>
+                <li>Spiritual Engagement: <strong>67%</strong></li>
+            </ul>
+            <canvas id="results-chart" width="400" height="300"></canvas>
+            <button id="start-over">Start Over</button>
+        </section>
+    </main>
+
     <script>
-        function navigateTo(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
+        // DOM Elements
+        const screens = {
+            welcome: document.getElementById('welcome-screen'),
+            upload: document.getElementById('upload-record-screen'),
+            analysis: document.getElementById('analysis-screen'),
+            results: document.getElementById('results-screen'),
+        };
+
+        const buttons = {
+            start: document.getElementById('start-button'),
+            back: document.getElementById('back-to-welcome'),
+            analyzeUpload: document.getElementById('analyze-upload'),
+            analyzeRecording: document.getElementById('analyze-recording'),
+            startOver: document.getElementById('start-over'),
+        };
+
+        const progressBars = {
+            analysis: document.getElementById('progress-bar-inner-analysis'),
+        };
+
+        // Navigation Functions
+        function navigateTo(screen) {
+            Object.values(screens).forEach(el => el.classList.add('hidden'));
+            screens[screen].classList.remove('hidden');
+        }
+
+        buttons.start.addEventListener('click', () => navigateTo('upload'));
+        buttons.back.addEventListener('click', () => navigateTo('welcome'));
+        buttons.startOver.addEventListener('click', () => navigateTo('welcome'));
+
+        // Analysis Simulation
+        function startAnalysis() {
+            navigateTo('analysis');
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBars.analysis.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    navigateTo('results');
+                    renderChart();
+                }
+            }, 500);
+        }
+
+        buttons.analyzeUpload.addEventListener('click', startAnalysis);
+        buttons.analyzeRecording.addEventListener('click', startAnalysis);
+
+        // Chart Rendering
+        function renderChart() {
+            const canvas = document.getElementById('results-chart');
+            const ctx = canvas.getContext('2d');
+            const data = [85, 78, 92, 67];
+            const labels = ['Physical', 'Emotional', 'Mental', 'Spiritual'];
+            const barWidth = 80;
+            const gap = 20;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            data.forEach((value, index) => {
+                const x = index * (barWidth + gap) + gap;
+                const y = canvas.height - (value / 100) * canvas.height;
+
+                ctx.fillStyle = ['#f87171', '#60a5fa', '#a78bfa', '#facc15'][index];
+                ctx.fillRect(x, y, barWidth, canvas.height - y);
+
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[index], x + barWidth / 2, canvas.height - 10);
+                ctx.fillText(`${value}%`, x + barWidth / 2, y - 10);
             });
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function startRecording() {
-            alert("Recording started...");
-        }
-
-        function stopRecording() {
-            alert("Recording stopped.");
-        }
-
-        function downloadPDF() {
-            alert("Results PDF downloaded.");
         }
     </script>
 </body>
